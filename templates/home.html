@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="he" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Django Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: right;
+        }
+        .header {
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .logo img {
+            width: 85%;
+        }
+        .center-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #50bcbc;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 9px #999;
+        }
+        .button:hover {
+            background-color: #50bcbc;
+        }
+        .button:active {
+            background-color: #5064ac;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+        #progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+            position: relative;
+        }
+        #progress-bar {
+            height: 20px;
+            background-color: #50bcbc;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        #progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 20px;
+            color: #000;
+        }
+        #eta {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        #download-link {
+            display: none;
+            margin-top: 20px;
+        }
+        .help-button {
+            font-weight: bold;
+            font-size: 24px;
+            line-height: 24px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background-color: #5064ac;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s, right 0.3s, bottom 0.3s;
+        }
+        .help-content {
+            display: none;
+            position: fixed;
+            right: 80px;
+            bottom: 80px;
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            text-align: left;
+        }
+        #help-checkbox:checked ~ .help-content {
+            display: block;
+        }
+        #help-checkbox {
+            display: none;
+        }
+
+        #show-table-button {
+            display: none; /* Hide the button initially */
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="logo">
+        <img src="{% static 'logo.png' %}" alt="Logo">
+    </div>
+</div>
+
+<div class="center-container">
+    <form method="post" enctype="multipart/form-data" target="display-frame">
+        {% csrf_token %}
+        <div class="form-row">
+            {{ form }}
+        </div>
+
+        <div class="form-row">
+            <h3>Save Output as</h3>
+            <label><input type="radio" name="format" value="csv" checked>CSV</label>
+            <label><input type="radio" name="format" value="xlsx">XLSX</label>
+        </div>
+        <div class="button-container">
+            <button class="button" type="submit" name="action" value="upload">Upload</button>
+            <button class="button" type="button" id="run-button">Run</button>
+        </div>
+    </form>
+
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+        <div id="progress-text"></div>
+    </div>
+    <div id="eta"></div>
+    <div id="run-result"></div>
+
+    <a id="download-link" class="button" href="#" download>Download Processed File</a>
+        <br><br>
+
+    <button id="show-updated-table" class="button" style="display: none;">Show Updated Table</button>
+
+    <br><br>
+    <iframe id="display-frame" name="display-frame" style="width:100%; height:600px; box-shadow: none; border: none;" src=""></iframe>
+</div>
+
+<button class="help-button" onclick="alert('Help Functionality Placeholder!')">?</button>
+
+<input type="checkbox" id="help-checkbox">
+<label for="help-checkbox" class="help-button">?</label>
+
+<div class="help-content" style="text-align: left;">
+    <strong>? Need Help</strong>
+    <p>Welcome to the file processing tool! Here are some simple steps to help you get started:</p>
+    <p><strong>1. Select a File:</strong> Click on the "Choose File" button to upload your CSV or XLSX file. Please ensure that your file is in the correct format and that your table is structured as planned for successful processing.</p>
+    <p><strong>2. Save Output as:</strong> Choose the format in which you want to save the processed output. You can select either CSV or XLSX.</p>
+    <p><strong>3. Upload the File:</strong> Click the "Upload" button to upload your file to the server. This step is necessary before you can process the file.</p>
+    <p><strong>4. Process the File:</strong> Once the file is uploaded, click the "Run" button to start processing the file. During processing, you will see an estimated time of arrival (ETA) and a progress bar indicating the status of the processing.</p>
+    <p>If you encounter any issues or have questions, feel free to reach out for support.</p>
+</div>
+
+<script>
+    document.getElementById('run-button').onclick = function() {
+        document.getElementById('progress-bar').style.display = 'block';
+        document.getElementById('progress-bar').style.width = '0%';
+        document.getElementById('progress-text').innerText = '0%';
+        document.getElementById('eta').innerText = '';
+        document.getElementById('download-link').style.display = 'none';
+        document.getElementById('show-updated-table').style.display = 'none';
+
+        var formData = new FormData(document.querySelector('form'));
+        var startTime = Date.now();
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "run_df" %}', true);
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                document.getElementById('run-result').innerHTML = response.result;
+                var filename = response.filename;
+
+                document.getElementById('download-link').href = 'media/download/' + filename;
+                document.getElementById('download-link').style.display = 'block';
+
+                document.getElementById('show-updated-table').onclick = function() {
+                    document.getElementById('display-frame').src = '{% url "display-csv-2" "filename_placeholder" %}'.replace('filename_placeholder', filename);
+                };
+                document.getElementById('show-updated-table').style.display = 'block';
+            } else {
+                alert('Failed to run the function.');
+            }
+            document.getElementById('progress-bar').style.display = 'none';
+        };
+
+        xhr.send(formData);
+
+        function updateProgressBar() {
+            var progressXhr = new XMLHttpRequest();
+            progressXhr.open('GET', '{% url "get_progress" %}', true);
+
+            progressXhr.onload = function() {
+                if (progressXhr.status === 200) {
+                    var progressResponse = JSON.parse(progressXhr.responseText);
+                    var progress = progressResponse.progress;
+                    var elapsedTime = (Date.now() - startTime) / 1000; // in seconds
+                    var eta = elapsedTime * (100 / progress - 1); // estimated time remaining
+
+                    document.getElementById('progress-bar').style.width = progress + '%';
+                    document.getElementById('progress-text').innerText = progress.toFixed(2) + '%';
+                    document.getElementById('eta').innerText = 'ETA: ' + eta.toFixed(2) + ' seconds';
+
+                    if (progress < 100) {
+                        setTimeout(updateProgressBar, 500);  // Poll every 500ms
+                    }
+                }
+            };
+
+            progressXhr.send();
+        }
+
+        updateProgressBar();
+    };
+</script>
+
+
+</body>
+</html>
