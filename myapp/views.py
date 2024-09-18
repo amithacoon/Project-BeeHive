@@ -27,7 +27,7 @@ prompt7 = " קח את הטקסט הבא בעברית וסכם בשורה אחת 
 def gemini(prompt, text):
     model_name = 'gemini-1.5-flash'  # Replace with an available model name if needed
     model = genai.GenerativeModel(model_name)
-    genai.configure(api_key='AIzaSyB3h0w_rzHYiaFDP6PJ5VqiBw3l8sKF3hA')
+    genai.configure(api_key='API_KEY')
     combined =prompt + text
     response = model.generate_content(combined)
     text = response.candidates[0].content.parts[0].text
